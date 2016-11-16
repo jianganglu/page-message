@@ -1,0 +1,97 @@
+﻿<html>
+  <head>
+    <title>
+      项目列表
+    </title>
+    <body>
+      <h1></h1>
+      <ul id="list">
+      </ul>
+      <script src="vendor/jquery.js"></script>
+      <script>
+
+        $(function() {
+
+          var vm = {
+
+            PAGE_NUM: 4,
+
+            init: function() {
+              this.setupEvent();
+            },
+
+            setupEvent: function() {
+              var self = this;
+              var o = {}, count, window_project;
+
+              o = self.openWindow();
+
+              window.addEventListener('message', receiveMessage, false);
+              function receiveMessage(event) {
+                
+                var data = JSON.parse(event.data);
+
+                count = 0;
+                window_project = [];
+
+                o = self.openWindow();
+
+                $.ajax({
+                  type: 'GET',
+                  url: 'json/project.json'
+                }).done(function(resp) {
+                  if(resp.code === 'ACK') {
+                    var html = '';
+                    $.each(resp.data, function(key, item) {
+                      html += '<li>'+ item.title +'</li>';
+                    });
+                    $('#list').empty().append(html);
+                  }
+                });
+              }
+
+              var index;
+              $('#list').on('click', 'li', function() {
+
+                var nth = count % self.PAGE_NUM;
+
+                if(index === $(this).index() || window_project[nth] === $(this).html()) {
+                  return;
+                }
+
+                for(var i = 0; i < window_project.length; i++) {
+                  if(window_project[i] === $(this).html()) {
+                    return false;
+                  }
+                }
+
+                window_project[nth] = $(this).html();
+
+                o['view' + nth].postMessage($(this).html(), '/');
+
+                count++;
+                index = $(this).index();
+
+              });
+
+            },
+
+            openWindow: function() {
+              var self = this;
+              var o = {};
+
+              for(var i = 0; i < self.PAGE_NUM; i++) {
+                o['view'+ i] = window.open('view0.html', 'view' + i);
+              }
+
+              return o;
+            }
+          }
+
+          vm.init();
+
+        });
+      </script>
+    </body>
+  </head>
+</html>

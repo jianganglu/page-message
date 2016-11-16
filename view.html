@@ -1,0 +1,41 @@
+﻿<html>
+  <head>
+    <title>
+      子集团列表
+    </title>
+    <body>
+      <h1>子集团列表</h1>
+      <ul id="list">
+        <li>子集团A</li>
+        <li>子集团B</li>
+        <li>子集团C</li>
+        <li>子集团D</li>
+      </ul>
+    <script src="vendor/jquery.js"></script>
+    <script>
+
+    $(function() {
+
+      var vm = {
+        init: function() {
+          this.setupEvent();
+        },
+
+        setupEvent: function() {
+
+          var project_window = window.open('project.html', 'project');
+
+          $('#list').on('click', 'li', function() {
+            var id = $(this).index();
+            project_window.postMessage(JSON.stringify({id: id}), '/');
+          });
+        }
+      };
+
+      vm.init();
+
+    });
+    </script>
+    </body>
+  </head>
+</html>

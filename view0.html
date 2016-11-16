@@ -1,0 +1,23 @@
+﻿<html>
+  <head>
+    <title>
+      项目列表
+    </title>
+    <body>
+      <h1></h1>
+      <ul>
+      </ul>
+      <script src="vendor/jquery.js"></script>
+      <script>
+        window.addEventListener("message", receiveMessage, false);
+        function receiveMessage(event) {
+          var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
+          // if (origin !== "http://example.org:8080")
+            // return;
+          
+          document.body.innerHTML += event.data;
+        }
+      </script>
+    </body>
+  </head>
+</html>
